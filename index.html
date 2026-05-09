@@ -183,8 +183,9 @@ vturb-smartplayer {
 }
 
 /* ====================================================
-   AVATARS — círculos com inicial, zero dependência externa
+   AVATARS
    ==================================================== */
+/* Avatar "Y" (usuário) — círculo azul com letra */
 .av {
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
@@ -193,19 +194,21 @@ vturb-smartplayer {
 }
 .av-lg { width: 32px; height: 32px; font-size: 13px; }
 .av-sm { width: 24px; height: 24px; font-size: 10px; }
-.bg1  { background: #C2185B; }
-.bg2  { background: #1565C0; }
-.bg3  { background: #00695C; }
-.bg4  { background: #455A64; }
-.bg5  { background: #2E7D32; }
-.bg6  { background: #E65100; }
-.bg7  { background: #4527A0; }
-.bg8  { background: #AD1457; }
-.bg9  { background: #0277BD; }
-.bg10 { background: #6A1B9A; }
-.bg11 { background: #B71C1C; }
-.bg12 { background: #1B5E20; }
-.bg13 { background: #880E4F; }
+.bg2 { background: #1565C0; }
+
+/* Avatar com foto real */
+.av-photo {
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: block;
+}
+.av-photo.av-lg { width: 32px; height: 32px; }
+.av-photo.av-sm { width: 24px; height: 24px; }
+.av-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
 
 /* ====================================================
    COMMENT LIST
@@ -419,7 +422,7 @@ footer {
 
       <!-- 1. Meredith Fields -->
       <div class="cm">
-        <div class="av av-lg bg1">M</div>
+        <div class="av-photo av-lg"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Meredith Fields"></div>
         <div class="cm-col">
           <div class="bbl">
             <a href="#" class="nm">Meredith Fields</a>
@@ -433,7 +436,7 @@ footer {
           </div>
           <div class="reps">
             <div class="rep">
-              <div class="av av-sm bg2">S</div>
+              <div class="av-photo av-sm"><img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Sarah Levine"></div>
               <div class="rep-col">
                 <div class="rep-bbl">
                   <span class="nm">Sarah Levine</span>
@@ -452,7 +455,7 @@ footer {
 
       <!-- 2. Jessica Allen -->
       <div class="cm">
-        <div class="av av-lg bg3">J</div>
+        <div class="av-photo av-lg"><img src="https://randomuser.me/api/portraits/women/21.jpg" alt="Jessica Allen"></div>
         <div class="cm-col">
           <div class="bbl">
             <a href="#" class="nm">Jessica Allen</a>
@@ -469,7 +472,7 @@ footer {
 
       <!-- 3. Richard Shutter -->
       <div class="cm">
-        <div class="av av-lg bg4">R</div>
+        <div class="av-photo av-lg"><img src="https://randomuser.me/api/portraits/men/52.jpg" alt="Richard Shutter"></div>
         <div class="cm-col">
           <div class="bbl">
             <a href="#" class="nm">Richard Shutter</a>
@@ -483,7 +486,7 @@ footer {
           </div>
           <div class="reps">
             <div class="rep">
-              <div class="av av-sm bg5">L</div>
+              <div class="av-photo av-sm"><img src="https://randomuser.me/api/portraits/women/31.jpg" alt="Linda Kowalski"></div>
               <div class="rep-col">
                 <div class="rep-bbl">
                   <span class="nm">Linda Kowalski</span>
@@ -502,7 +505,7 @@ footer {
 
       <!-- 4. Florence Bess -->
       <div class="cm">
-        <div class="av av-lg bg6">F</div>
+        <div class="av-photo av-lg"><img src="https://randomuser.me/api/portraits/women/57.jpg" alt="Florence Bess"></div>
         <div class="cm-col">
           <div class="bbl">
             <a href="#" class="nm">Florence Bess</a>
@@ -519,7 +522,7 @@ footer {
 
       <!-- 5. Nancy Cohen -->
       <div class="cm">
-        <div class="av av-lg bg7">N</div>
+        <div class="av-photo av-lg"><img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Nancy Cohen"></div>
         <div class="cm-col">
           <div class="bbl">
             <a href="#" class="nm">Nancy Cohen</a>
@@ -536,7 +539,7 @@ footer {
 
       <!-- 6. Margy Peet -->
       <div class="cm">
-        <div class="av av-lg bg8">M</div>
+        <div class="av-photo av-lg"><img src="https://randomuser.me/api/portraits/women/12.jpg" alt="Margy Peet"></div>
         <div class="cm-col">
           <div class="bbl">
             <a href="#" class="nm">Margy Peet</a>
@@ -553,7 +556,7 @@ footer {
 
       <!-- 7. Michael Miller -->
       <div class="cm">
-        <div class="av av-lg bg9">M</div>
+        <div class="av-photo av-lg"><img src="https://randomuser.me/api/portraits/men/36.jpg" alt="Michael Miller"></div>
         <div class="cm-col">
           <div class="bbl">
             <a href="#" class="nm">Michael Miller</a>
@@ -567,7 +570,7 @@ footer {
           </div>
           <div class="reps">
             <div class="rep">
-              <div class="av av-sm bg10">T</div>
+              <div class="av-photo av-sm"><img src="https://randomuser.me/api/portraits/men/41.jpg" alt="Tom Richardson"></div>
               <div class="rep-col">
                 <div class="rep-bbl">
                   <span class="nm">Tom Richardson</span>
@@ -586,7 +589,7 @@ footer {
 
       <!-- 8. Jan McConnell -->
       <div class="cm">
-        <div class="av av-lg bg11">J</div>
+        <div class="av-photo av-lg"><img src="https://randomuser.me/api/portraits/women/76.jpg" alt="Jan McConnell"></div>
         <div class="cm-col">
           <div class="bbl">
             <a href="#" class="nm">Jan McConnell</a>
@@ -603,7 +606,7 @@ footer {
 
       <!-- 9. Dorothy Huang -->
       <div class="cm">
-        <div class="av av-lg bg12">D</div>
+        <div class="av-photo av-lg"><img src="https://randomuser.me/api/portraits/women/82.jpg" alt="Dorothy Huang"></div>
         <div class="cm-col">
           <div class="bbl">
             <a href="#" class="nm">Dorothy Huang</a>
@@ -617,7 +620,7 @@ footer {
           </div>
           <div class="reps">
             <div class="rep">
-              <div class="av av-sm bg13">A</div>
+              <div class="av-photo av-sm"><img src="https://randomuser.me/api/portraits/women/49.jpg" alt="Amanda Cho"></div>
               <div class="rep-col">
                 <div class="rep-bbl">
                   <span class="nm">Amanda Cho</span>
@@ -636,7 +639,7 @@ footer {
 
       <!-- 10. Kevin Torres -->
       <div class="cm">
-        <div class="av av-lg bg10">K</div>
+        <div class="av-photo av-lg"><img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Kevin Torres"></div>
         <div class="cm-col">
           <div class="bbl">
             <a href="#" class="nm">Kevin Torres</a>
