@@ -1,623 +1,699 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Last Digit Frequency™</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Last Digit Frequency™</title>
 
-  <!-- Meta Pixel -->
-  <script>
-  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
-  (window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init','1134863328817834');fbq('track','PageView');
-  </script>
-  <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1134863328817834&ev=PageView&noscript=1"/></noscript>
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','1134863328817834');fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1134863328817834&ev=PageView&noscript=1"/></noscript>
 
-  <!-- Utmify -->
-  <script src="https://cdn.utmify.com.br/scripts/utms/latest.js" data-utmify-prevent-xcod-sck data-utmify-prevent-subids async defer></script>
+<!-- Utmify -->
+<script src="https://cdn.utmify.com.br/scripts/utms/latest.js" data-utmify-prevent-xcod-sck data-utmify-prevent-subids async defer></script>
 
-  <style>
-    /* ─── BASE ─── */
-    *, *::before, *::after {
-      margin: 0; padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-    html, body {
-      width: 100%;
-      overflow-x: hidden;
-      -webkit-text-size-adjust: 100%;
-    }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-      background: #111;
-      color: #e8e8e8;
-    }
-    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+<style>
+/* ====================================================
+   RESET — protege contra CSS injetado por scripts externos
+   ==================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  overflow-x: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  background: #111;
+  color: #e8e8e8;
+}
+/* Escudo contra display flex/grid injetado no body pelo vturb */
+#app {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+  float: none !important;
+}
 
-    /* ─── URGENCY BAR ─── */
-    .urgency-bar {
-      width: 100%;
-      background: #1c1c1c;
-      border-bottom: 1px solid #333;
-      padding: 10px 16px;
-      text-align: center;
-    }
-    .urgency-bar p { font-size: 13px; color: #bbb; }
-    .urgency-bar strong { color: #eee; }
+/* ====================================================
+   URGENCY BAR
+   ==================================================== */
+#urgency {
+  display: block;
+  width: 100%;
+  background: #1c1c1c;
+  border-bottom: 1px solid #333;
+  padding: 10px 16px;
+  text-align: center;
+  font-size: 13px;
+  color: #bbb;
+}
+#urgency strong { color: #eee; }
 
-    /* ─── HEADER ─── */
-    header {
-      width: 100%;
-      background: #111;
-      border-bottom: 1px solid #222;
-      padding: 13px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-    .logo-icon {
-      width: 36px; height: 36px;
-      border: 2px solid #c9a84c;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; color: #c9a84c; flex-shrink: 0;
-    }
-    .logo-text { font-size: 18px; font-weight: 700; color: #c9a84c; }
-    .logo-text sup { font-size: 10px; color: #888; }
+/* ====================================================
+   HEADER
+   ==================================================== */
+#hdr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  background: #111;
+  border-bottom: 1px solid #222;
+  padding: 13px 16px;
+}
+#hdr .logo-ring {
+  width: 36px; height: 36px; flex-shrink: 0;
+  border: 2px solid #c9a84c;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: #c9a84c;
+}
+#hdr .logo-name {
+  font-size: 18px; font-weight: 700; color: #c9a84c;
+}
+#hdr .logo-name sup { font-size: 10px; color: #888; }
 
-    /* ─── VIDEO ─── */
-    .vsl-wrap {
-      width: 100%;
-      background: #111;
-      overflow: hidden;
-    }
-    .vsl-inner {
-      display: block;
-      width: 100%;
-      max-width: 720px;
-      margin: 0 auto;
-      overflow: hidden;
-    }
+/* ====================================================
+   VIDEO SECTION
+   ==================================================== */
+#video-section {
+  display: block;
+  width: 100%;
+  background: #111;
+  overflow: hidden;
+}
+#video-box {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+/* força o custom element a se comportar como bloco */
+vturb-smartplayer {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
 
-    /* ─── COMMENTS WRAPPER ─── */
-    .fb-page {
-      display: block;
-      width: 100%;
-      background: #f0f2f5;
-    }
-    .fb-box {
-      display: block;
-      width: 100%;
-      max-width: 680px;
-      margin: 0 auto;
-    }
+/* ====================================================
+   COMMENTS — background cobre 100% da largura
+   ==================================================== */
+#comments-bg {
+  display: block;
+  width: 100%;
+  background: #f0f2f5;
+}
+#comments-wrap {
+  display: block;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+}
 
-    /* ─── TOP BAR ─── */
-    .fb-topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #fff;
-      border-bottom: 1px solid #e4e6ea;
-      padding: 10px 12px;
-    }
-    .fb-topbar span { font-size: 13px; color: #65676b; }
-    .fb-sort {
-      display: flex; align-items: center; gap: 4px;
-      font-size: 13px; color: #1877F2; font-weight: 600;
-      padding: 5px 8px; border-radius: 6px;
-    }
-    .fb-sort:active { background: #e8f0fe; }
+/* --- Top bar --- */
+#topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-bottom: 1px solid #e4e6ea;
+  padding: 10px 12px;
+}
+#topbar .count { font-size: 13px; color: #65676b; }
+#topbar .sort-btn {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 13px; color: #1877F2; font-weight: 600;
+  background: none; border: none; cursor: pointer;
+  padding: 5px 8px; border-radius: 6px;
+  font-family: inherit;
+}
 
-    /* ─── INPUT ROW ─── */
-    .fb-input-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: #fff;
-      border-bottom: 1px solid #e4e6ea;
-      padding: 8px 12px 10px;
-    }
-    .fb-pill {
-      flex: 1;
-      min-width: 0;
-      background: #f0f2f5;
-      border: none; outline: none;
-      border-radius: 20px;
-      padding: 8px 14px;
-      font-size: 15px;
-      color: #050505;
-      font-family: inherit;
-      resize: none;
-      overflow: hidden;
-      line-height: 1.4;
-      min-height: 36px;
-    }
-    .fb-pill::placeholder { color: #65676b; }
-    .fb-send {
-      flex-shrink: 0;
-      color: #1877F2;
-      opacity: 0.35;
-      transition: opacity .15s;
-      display: flex; align-items: center; justify-content: center;
-      width: 32px; height: 32px;
-      border-radius: 50%;
-    }
+/* --- Input row --- */
+#input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border-bottom: 1px solid #e4e6ea;
+  padding: 8px 12px 10px;
+}
+#cInput {
+  flex: 1;
+  min-width: 0;
+  background: #f0f2f5;
+  border: none;
+  outline: none;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 15px;
+  color: #050505;
+  font-family: inherit;
+  resize: none;
+  overflow: hidden;
+  line-height: 1.4;
+  min-height: 36px;
+  display: block;
+}
+#cInput::placeholder { color: #65676b; }
+#cSend {
+  flex-shrink: 0;
+  background: none; border: none; cursor: pointer;
+  color: #1877F2;
+  opacity: 0.35;
+  transition: opacity .15s;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  font-family: inherit;
+}
 
-    /* ─── AVATAR (letter circle) ─── */
-    .av {
-      flex-shrink: 0;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; color: #fff;
-      user-select: none; line-height: 1;
-    }
-    .av-lg { width: 32px; height: 32px; font-size: 13px; }
-    .av-sm { width: 24px; height: 24px; font-size: 10px; }
-    .c1  { background: #C2185B; }
-    .c2  { background: #1565C0; }
-    .c3  { background: #00695C; }
-    .c4  { background: #455A64; }
-    .c5  { background: #2E7D32; }
-    .c6  { background: #E65100; }
-    .c7  { background: #4527A0; }
-    .c8  { background: #AD1457; }
-    .c9  { background: #0277BD; }
-    .c10 { background: #6A1B9A; }
-    .c11 { background: #B71C1C; }
-    .c12 { background: #1B5E20; }
-    .c13 { background: #880E4F; }
+/* ====================================================
+   AVATARS — círculos com inicial, zero dependência externa
+   ==================================================== */
+.av {
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; color: #fff;
+  user-select: none; flex-shrink: 0; line-height: 1;
+}
+.av-lg { width: 32px; height: 32px; font-size: 13px; }
+.av-sm { width: 24px; height: 24px; font-size: 10px; }
+.bg1  { background: #C2185B; }
+.bg2  { background: #1565C0; }
+.bg3  { background: #00695C; }
+.bg4  { background: #455A64; }
+.bg5  { background: #2E7D32; }
+.bg6  { background: #E65100; }
+.bg7  { background: #4527A0; }
+.bg8  { background: #AD1457; }
+.bg9  { background: #0277BD; }
+.bg10 { background: #6A1B9A; }
+.bg11 { background: #B71C1C; }
+.bg12 { background: #1B5E20; }
+.bg13 { background: #880E4F; }
 
-    /* ─── COMMENTS LIST ─── */
-    .fb-list {
-      display: block;
-      width: 100%;
-      background: #fff;
-      padding-bottom: 4px;
-    }
+/* ====================================================
+   COMMENT LIST
+   ==================================================== */
+#cList {
+  display: block;
+  width: 100%;
+  background: #fff;
+  padding-bottom: 4px;
+}
 
-    /* Single comment row */
-    .fb-c {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      padding: 8px 12px 0;
-      width: 100%;
-    }
-    .fb-c-body {
-      flex: 1;
-      min-width: 0; /* critical — prevents flex child from overflowing */
-    }
+/* Uma linha de comentário */
+.cm {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 12px 0;
+  /* não colocar overflow:hidden aqui — quebra o badge de reação */
+}
 
-    /* Bubble */
-    .fb-bbl {
-      display: block; /* block, not inline-block */
-      width: 100%;
-      background: #f0f2f5;
-      border-radius: 18px;
-      padding: 8px 12px;
-      position: relative;
-      margin-bottom: 14px; /* room for reaction badge */
-      word-break: break-word;
-    }
-    .fb-bbl .name {
-      display: block;
-      font-weight: 700; font-size: 13px; color: #050505;
-      margin-bottom: 2px; text-decoration: none;
-    }
-    .fb-bbl .name:hover { text-decoration: underline; }
-    .fb-bbl .txt {
-      font-size: 15px; color: #050505; line-height: 1.36;
-      word-break: break-word; overflow-wrap: anywhere;
-    }
+/* Coluna direita do comentário — CRÍTICO: flex:1 + min-width:0 */
+.cm-col {
+  flex: 1;
+  min-width: 0; /* sem isso o flex filho não respeita o container */
+}
 
-    /* Reaction badge on bubble */
-    .react {
-      position: absolute;
-      bottom: -11px; right: 8px;
-      background: #fff;
-      border-radius: 10px;
-      padding: 2px 6px 2px 3px;
-      display: flex; align-items: center; gap: 1px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.18);
-      font-size: 11px; color: #65676b;
-      white-space: nowrap; line-height: 1;
-    }
-    .react span { font-size: 12px; }
+/* Bolha do comentário */
+.bbl {
+  display: block;         /* NÃO inline-block */
+  width: 100%;            /* ocupa toda a coluna */
+  background: #f0f2f5;
+  border-radius: 18px;
+  padding: 8px 12px;
+  position: relative;
+  margin-bottom: 14px;    /* espaço para o badge de reação */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+.bbl .nm {
+  display: block;
+  font-weight: 700; font-size: 13px; color: #050505;
+  margin-bottom: 2px;
+  text-decoration: none;
+}
+.bbl .nm:hover { text-decoration: underline; }
+.bbl .tx {
+  font-size: 15px; color: #050505;
+  line-height: 1.36;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
 
-    /* Action row */
-    .fb-acts {
-      display: flex; align-items: center;
-      padding: 2px 4px 4px; flex-wrap: wrap;
-    }
-    .act {
-      font-size: 12px; font-weight: 700; color: #65676b;
-      padding: 4px 6px; border-radius: 4px;
-      min-height: 28px; display: flex; align-items: center;
-    }
-    .act:active { background: #e4e6ea; }
-    .act.on { color: #1877F2; }
-    .dot { font-size: 12px; color: #bcc0c4; padding: 0 1px; line-height: 28px; }
-    .tme { font-size: 12px; color: #65676b; padding: 4px 6px; min-height: 28px; display: flex; align-items: center; }
+/* Badge de reações no canto da bolha */
+.rct {
+  position: absolute;
+  bottom: -11px; right: 8px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 2px 6px 2px 3px;
+  display: flex; align-items: center; gap: 1px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+  font-size: 11px; color: #65676b;
+  white-space: nowrap; line-height: 1;
+  pointer-events: none;
+}
+.rct span { font-size: 12px; }
 
-    /* Digit badge */
-    .db {
-      display: inline-block; background: #1877F2; color: #fff;
-      font-size: 11px; font-weight: 800;
-      padding: 1px 6px; border-radius: 10px;
-      margin: 0 1px; vertical-align: middle;
-    }
+/* Linha de ações abaixo da bolha */
+.acts {
+  display: flex; align-items: center;
+  padding: 2px 4px 4px;
+  flex-wrap: nowrap;
+}
+.act-btn {
+  font-size: 12px; font-weight: 700; color: #65676b;
+  background: none; border: none; cursor: pointer;
+  padding: 4px 6px; border-radius: 4px;
+  min-height: 28px; display: flex; align-items: center;
+  font-family: inherit;
+}
+.act-btn:active { background: #e4e6ea; }
+.act-btn.on { color: #1877F2; }
+.sep { font-size: 12px; color: #bcc0c4; padding: 0 1px; line-height: 28px; }
+.tme { font-size: 12px; color: #65676b; padding: 4px 6px; min-height: 28px; display: flex; align-items: center; }
 
-    /* ─── REPLIES ─── */
-    .fb-reps { padding: 0 0 4px 40px; width: 100%; }
-    .fb-r {
-      display: flex; align-items: flex-start; gap: 7px;
-      padding: 4px 0 0; width: 100%;
-    }
-    .fb-r-body { flex: 1; min-width: 0; }
-    .fb-rbbl {
-      display: block; width: 100%;
-      background: #f0f2f5; border-radius: 16px;
-      padding: 6px 10px; word-break: break-word;
-    }
-    .fb-rbbl .name { font-weight: 700; font-size: 12px; color: #050505; margin-bottom: 1px; display: block; }
-    .fb-rbbl .txt  { font-size: 13px; color: #050505; line-height: 1.36; word-break: break-word; }
-    .fb-ract {
-      display: flex; align-items: center;
-      padding: 2px 4px 2px;
-    }
-    .ract {
-      font-size: 11px; font-weight: 700; color: #65676b;
-      padding: 3px 5px; border-radius: 4px; min-height: 24px;
-      display: flex; align-items: center;
-    }
-    .ract:active { background: #e4e6ea; }
-    .ract.on { color: #1877F2; }
-    .rdot { font-size: 11px; color: #bcc0c4; padding: 0 1px; }
-    .rtme { font-size: 11px; color: #65676b; padding: 3px 5px; min-height: 24px; display: flex; align-items: center; }
+/* Badge de dígito */
+.db {
+  display: inline-block;
+  background: #1877F2; color: #fff;
+  font-size: 11px; font-weight: 800;
+  padding: 1px 6px; border-radius: 10px;
+  margin: 0 1px; vertical-align: middle;
+}
 
-    /* ─── LOAD MORE ─── */
-    .fb-more {
-      display: flex; align-items: center; gap: 8px;
-      background: #fff; padding: 10px 12px 16px;
-    }
-    .more-btn {
-      flex: 1; min-width: 0;
-      background: #f0f2f5; border-radius: 20px;
-      padding: 8px 14px; font-size: 14px; font-weight: 600;
-      color: #1877F2; text-align: left; min-height: 36px;
-      display: flex; align-items: center;
-    }
-    .more-btn:active { background: #e4e6ea; }
+/* ====================================================
+   RESPOSTAS
+   ==================================================== */
+.reps { padding: 0 0 4px 40px; }
+.rep {
+  display: flex; align-items: flex-start; gap: 7px;
+  padding: 4px 0 0;
+}
+.rep-col { flex: 1; min-width: 0; }
+.rep-bbl {
+  display: block; width: 100%;
+  background: #f0f2f5; border-radius: 16px;
+  padding: 6px 10px;
+  word-break: break-word; overflow-wrap: anywhere;
+}
+.rep-bbl .nm { display: block; font-weight: 700; font-size: 12px; color: #050505; margin-bottom: 1px; }
+.rep-bbl .tx { font-size: 13px; color: #050505; line-height: 1.36; word-break: break-word; }
+.rep-acts { display: flex; align-items: center; padding: 2px 4px; }
+.rep-btn {
+  font-size: 11px; font-weight: 700; color: #65676b;
+  background: none; border: none; cursor: pointer;
+  padding: 3px 5px; border-radius: 4px; min-height: 24px;
+  display: flex; align-items: center; font-family: inherit;
+}
+.rep-btn:active { background: #e4e6ea; }
+.rep-btn.on { color: #1877F2; }
+.rsep { font-size: 11px; color: #bcc0c4; padding: 0 1px; }
+.rtme { font-size: 11px; color: #65676b; padding: 3px 5px; min-height: 24px; display: flex; align-items: center; }
 
-    /* ─── FOOTER ─── */
-    footer {
-      width: 100%;
-      background: #0a0a0a;
-      border-top: 1px solid #1a1a1a;
-      padding: 20px 16px; text-align: center;
-      font-size: 12px; color: #444;
-    }
-    .foot-links { display: flex; flex-wrap: wrap; justify-content: center; margin-bottom: 8px; }
-    .foot-links a { color: #555; text-decoration: none; padding: 4px 8px; }
-    .disc { font-size: 11px; color: #333; line-height: 1.6; max-width: 580px; margin: 0 auto; }
+/* ====================================================
+   VER MAIS
+   ==================================================== */
+#more-row {
+  display: flex; align-items: center; gap: 8px;
+  background: #fff;
+  padding: 10px 12px 16px;
+}
+#moreBtn {
+  flex: 1; min-width: 0;
+  background: #f0f2f5; border-radius: 20px;
+  border: none; cursor: pointer;
+  padding: 8px 14px; font-size: 14px; font-weight: 600;
+  color: #1877F2; text-align: left; min-height: 36px;
+  display: flex; align-items: center;
+  font-family: inherit;
+}
+#moreBtn:active { background: #e4e6ea; }
 
-    @keyframes fadeIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
-  </style>
+/* ====================================================
+   FOOTER
+   ==================================================== */
+footer {
+  display: block; width: 100%;
+  background: #0a0a0a;
+  border-top: 1px solid #1a1a1a;
+  padding: 20px 16px; text-align: center;
+  font-size: 12px; color: #444;
+}
+.ft-links { display: flex; flex-wrap: wrap; justify-content: center; margin-bottom: 8px; }
+.ft-links a { color: #555; text-decoration: none; padding: 4px 8px; }
+.ft-disc { font-size: 11px; color: #333; line-height: 1.6; max-width: 580px; margin: 0 auto; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
 </head>
 <body>
+<div id="app">
 
-<div class="urgency-bar">
-  <p>⚠️ <strong>Warning:</strong> This sacred frequency presentation may be removed at any time</p>
-</div>
-
-<header>
-  <div class="logo-icon">∞</div>
-  <div class="logo-text">Last Digit Frequency<sup>™</sup></div>
-</header>
-
-<div class="vsl-wrap">
-  <div class="vsl-inner">
-    <vturb-smartplayer id="vid-69ff74141519d629fefcff10" style="display:block;width:100%;max-width:100%;"></vturb-smartplayer>
-    <script type="text/javascript">
-      var s=document.createElement("script");
-      s.src="https://scripts.converteai.net/ee830e5f-20cd-464b-af49-240d2b124f63/players/69ff74141519d629fefcff10/v4/player.js";
-      s.async=!0;document.head.appendChild(s);
-    </script>
-  </div>
-</div>
-
-<div class="fb-page">
-<div class="fb-box">
-
-  <div class="fb-topbar">
-    <span>Showing 16 of 4,831 comments</span>
-    <button class="fb-sort">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="#1877F2"><path d="M3 18h6v-2H3v2zm0-5h10v-2H3v2zm0-7v2h18V6H3z"/></svg>
-      Most Relevant
-    </button>
+  <!-- URGENCY -->
+  <div id="urgency">
+    ⚠️ <strong>Warning:</strong> This sacred frequency presentation may be removed at any time
   </div>
 
-  <div class="fb-input-row">
-    <div class="av av-lg c2">Y</div>
-    <textarea id="cInput" class="fb-pill" rows="1" placeholder="Write a comment…"></textarea>
-    <button id="cSend" class="fb-send" title="Post">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
-    </button>
+  <!-- HEADER -->
+  <div id="hdr">
+    <div class="logo-ring">∞</div>
+    <div class="logo-name">Last Digit Frequency<sup>™</sup></div>
   </div>
 
-  <div class="fb-list" id="fbList">
+  <!-- VIDEO -->
+  <div id="video-section">
+    <div id="video-box">
+      <vturb-smartplayer id="vid-69ff74141519d629fefcff10"></vturb-smartplayer>
+      <script>
+        var s = document.createElement('script');
+        s.src = 'https://scripts.converteai.net/ee830e5f-20cd-464b-af49-240d2b124f63/players/69ff74141519d629fefcff10/v4/player.js';
+        s.async = true;
+        document.head.appendChild(s);
+      </script>
+    </div>
+  </div>
 
-    <!-- 1 -->
-    <div class="fb-c">
-      <div class="av av-lg c1">M</div>
-      <div class="fb-c-body">
-        <div class="fb-bbl">
-          <a href="#" class="name">Meredith Fields</a>
-          <div class="txt">I watched this three times because I couldn't believe what I was hearing. I'm a <span class="db">Digit 8</span> and everything they described — the financial blocks, the self-sabotage, the relationship patterns — that was my entire life. I started listening to my frequency audio every morning and within two weeks I got a job offer I had been chasing for a year. I'm shaking writing this.</div>
-          <div class="react"><span>👍</span><span>❤️</span><span>😮</span> 247</div>
-        </div>
-        <div class="fb-acts">
-          <button class="act on">Like</button><span class="dot">·</span>
-          <button class="act">Reply</button><span class="dot">·</span>
-          <span class="tme">4 min</span>
-        </div>
-        <div class="fb-reps">
-          <div class="fb-r">
-            <div class="av av-sm c2">S</div>
-            <div class="fb-r-body">
-              <div class="fb-rbbl">
-                <span class="name">Sarah Levine</span>
-                <div class="txt">Meredith same!!! Digit 8 here too and this felt like someone read my diary. The job thing is wild — congratulations!! 🙏</div>
-              </div>
-              <div class="fb-ract">
-                <button class="ract on">Like</button><span class="rdot">·</span>
-                <button class="ract">Reply</button><span class="rdot">·</span>
-                <span class="rtme">2 min</span>
+  <!-- COMMENTS -->
+  <div id="comments-bg">
+  <div id="comments-wrap">
+
+    <div id="topbar">
+      <span class="count">Showing 16 of 4,831 comments</span>
+      <button class="sort-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="#1877F2"><path d="M3 18h6v-2H3v2zm0-5h10v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        Most Relevant
+      </button>
+    </div>
+
+    <div id="input-row">
+      <div class="av av-lg bg2">Y</div>
+      <textarea id="cInput" rows="1" placeholder="Write a comment…"></textarea>
+      <button id="cSend" title="Post">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+      </button>
+    </div>
+
+    <div id="cList">
+
+      <!-- 1. Meredith Fields -->
+      <div class="cm">
+        <div class="av av-lg bg1">M</div>
+        <div class="cm-col">
+          <div class="bbl">
+            <a href="#" class="nm">Meredith Fields</a>
+            <div class="tx">I watched this three times because I couldn't believe what I was hearing. I'm a <span class="db">Digit 8</span> and everything they described — the financial blocks, the self-sabotage, the relationship patterns — that was my entire life. I started listening to my frequency audio every morning and within two weeks I got a job offer I had been chasing for a year. I'm shaking writing this.</div>
+            <div class="rct"><span>👍</span><span>❤️</span><span>😮</span> 247</div>
+          </div>
+          <div class="acts">
+            <button class="act-btn on">Like</button><span class="sep">·</span>
+            <button class="act-btn">Reply</button><span class="sep">·</span>
+            <span class="tme">4 min</span>
+          </div>
+          <div class="reps">
+            <div class="rep">
+              <div class="av av-sm bg2">S</div>
+              <div class="rep-col">
+                <div class="rep-bbl">
+                  <span class="nm">Sarah Levine</span>
+                  <div class="tx">Meredith same!!! Digit 8 here too and this felt like someone read my diary. The job thing is wild — congratulations!! 🙏</div>
+                </div>
+                <div class="rep-acts">
+                  <button class="rep-btn on">Like</button><span class="rsep">·</span>
+                  <button class="rep-btn">Reply</button><span class="rsep">·</span>
+                  <span class="rtme">2 min</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 2 -->
-    <div class="fb-c">
-      <div class="av av-lg c3">J</div>
-      <div class="fb-c-body">
-        <div class="fb-bbl">
-          <a href="#" class="name">Jessica Allen</a>
-          <div class="txt">I was completely skeptical. My sister sent me the link and I almost didn't watch it. But something made me stay until the end. My digit is <span class="db">Digit 3</span> and the description of why digit 3s struggle with love hit me so hard I cried. I've been single for 6 years. After 3 weeks of listening to the frequency I met someone incredible. This is real.</div>
-          <div class="react"><span>👍</span><span>❤️</span> 183</div>
-        </div>
-        <div class="fb-acts">
-          <button class="act on">Like</button><span class="dot">·</span>
-          <button class="act">Reply</button><span class="dot">·</span>
-          <span class="tme">12 min</span>
+      <!-- 2. Jessica Allen -->
+      <div class="cm">
+        <div class="av av-lg bg3">J</div>
+        <div class="cm-col">
+          <div class="bbl">
+            <a href="#" class="nm">Jessica Allen</a>
+            <div class="tx">I was completely skeptical. My sister sent me the link and I almost didn't watch it. But something made me stay until the end. My digit is <span class="db">Digit 3</span> and the description of why digit 3s struggle with love hit me so hard I cried. I've been single for 6 years. After 3 weeks of listening to the frequency I met someone incredible. This is real.</div>
+            <div class="rct"><span>👍</span><span>❤️</span> 183</div>
+          </div>
+          <div class="acts">
+            <button class="act-btn on">Like</button><span class="sep">·</span>
+            <button class="act-btn">Reply</button><span class="sep">·</span>
+            <span class="tme">12 min</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 3 -->
-    <div class="fb-c">
-      <div class="av av-lg c4">R</div>
-      <div class="fb-c-body">
-        <div class="fb-bbl">
-          <a href="#" class="name">Richard Shutter</a>
-          <div class="txt">My whole family thought I was going crazy when I told them about this. But I was desperate — broke at 54, health falling apart, completely alone. The frequency audio for <span class="db">Digit 7</span> is something else. I listen every night with headphones and I feel a physical shift in my chest. My blood pressure is down, my business had its best month ever, and I feel ALIVE again.</div>
-          <div class="react"><span>👍</span><span>😮</span><span>❤️</span> 312</div>
-        </div>
-        <div class="fb-acts">
-          <button class="act on">Like</button><span class="dot">·</span>
-          <button class="act">Reply</button><span class="dot">·</span>
-          <span class="tme">18 min</span>
-        </div>
-        <div class="fb-reps">
-          <div class="fb-r">
-            <div class="av av-sm c5">L</div>
-            <div class="fb-r-body">
-              <div class="fb-rbbl">
-                <span class="name">Linda Kowalski</span>
-                <div class="txt">Richard — digit 7 here and the exact same happened with my blood pressure. My doctor was genuinely confused 😂 I did not mention the frequency lol</div>
-              </div>
-              <div class="fb-ract">
-                <button class="ract on">Like</button><span class="rdot">·</span>
-                <button class="ract">Reply</button><span class="rdot">·</span>
-                <span class="rtme">9 min</span>
+      <!-- 3. Richard Shutter -->
+      <div class="cm">
+        <div class="av av-lg bg4">R</div>
+        <div class="cm-col">
+          <div class="bbl">
+            <a href="#" class="nm">Richard Shutter</a>
+            <div class="tx">My whole family thought I was going crazy when I told them about this. But I was desperate — broke at 54, health falling apart, completely alone. The frequency audio for <span class="db">Digit 7</span> is something else. I listen every night with headphones and I feel a physical shift in my chest. My blood pressure is down, my business had its best month ever, and I feel ALIVE again.</div>
+            <div class="rct"><span>👍</span><span>😮</span><span>❤️</span> 312</div>
+          </div>
+          <div class="acts">
+            <button class="act-btn on">Like</button><span class="sep">·</span>
+            <button class="act-btn">Reply</button><span class="sep">·</span>
+            <span class="tme">18 min</span>
+          </div>
+          <div class="reps">
+            <div class="rep">
+              <div class="av av-sm bg5">L</div>
+              <div class="rep-col">
+                <div class="rep-bbl">
+                  <span class="nm">Linda Kowalski</span>
+                  <div class="tx">Richard — digit 7 here and the exact same happened with my blood pressure. My doctor was genuinely confused 😂 I did not mention the frequency lol</div>
+                </div>
+                <div class="rep-acts">
+                  <button class="rep-btn on">Like</button><span class="rsep">·</span>
+                  <button class="rep-btn">Reply</button><span class="rsep">·</span>
+                  <span class="rtme">9 min</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 4 -->
-    <div class="fb-c">
-      <div class="av av-lg c6">F</div>
-      <div class="fb-c-body">
-        <div class="fb-bbl">
-          <a href="#" class="name">Florence Bess</a>
-          <div class="txt">The part about <span class="db">Digit 5</span> being blocked from abundance because of an inherited energetic pattern — that explained my entire family history. My mom struggled. Her mom struggled. And so did I. I feel like I finally broke the cycle. It's only been a month but something has genuinely shifted. Money is moving differently. I can't explain it but I feel it.</div>
-          <div class="react"><span>❤️</span><span>👍</span> 96</div>
-        </div>
-        <div class="fb-acts">
-          <button class="act on">Like</button><span class="dot">·</span>
-          <button class="act">Reply</button><span class="dot">·</span>
-          <span class="tme">22 min</span>
+      <!-- 4. Florence Bess -->
+      <div class="cm">
+        <div class="av av-lg bg6">F</div>
+        <div class="cm-col">
+          <div class="bbl">
+            <a href="#" class="nm">Florence Bess</a>
+            <div class="tx">The part about <span class="db">Digit 5</span> being blocked from abundance because of an inherited energetic pattern — that explained my entire family history. My mom struggled. Her mom struggled. And so did I. I feel like I finally broke the cycle. It's only been a month but something has genuinely shifted. Money is moving differently. I can't explain it but I feel it.</div>
+            <div class="rct"><span>❤️</span><span>👍</span> 96</div>
+          </div>
+          <div class="acts">
+            <button class="act-btn on">Like</button><span class="sep">·</span>
+            <button class="act-btn">Reply</button><span class="sep">·</span>
+            <span class="tme">22 min</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 5 -->
-    <div class="fb-c">
-      <div class="av av-lg c7">N</div>
-      <div class="fb-c-body">
-        <div class="fb-bbl">
-          <a href="#" class="name">Nancy Cohen</a>
-          <div class="txt">I've tried everything — therapy, manifestation courses, vision boards. Nothing stuck. This is the first thing that felt like it was made FOR me specifically. Because it literally was — it's based on my actual birth digit. The healing recipes from the bonus are incredible too. My sleep is the best it's been in 10 years.</div>
-          <div class="react"><span>👍</span><span>❤️</span> 156</div>
-        </div>
-        <div class="fb-acts">
-          <button class="act on">Like</button><span class="dot">·</span>
-          <button class="act">Reply</button><span class="dot">·</span>
-          <span class="tme">31 min</span>
+      <!-- 5. Nancy Cohen -->
+      <div class="cm">
+        <div class="av av-lg bg7">N</div>
+        <div class="cm-col">
+          <div class="bbl">
+            <a href="#" class="nm">Nancy Cohen</a>
+            <div class="tx">I've tried everything — therapy, manifestation courses, vision boards. Nothing stuck. This is the first thing that felt like it was made FOR me specifically. Because it literally was — it's based on my actual birth digit. The healing recipes from the bonus are incredible too. My sleep is the best it's been in 10 years.</div>
+            <div class="rct"><span>👍</span><span>❤️</span> 156</div>
+          </div>
+          <div class="acts">
+            <button class="act-btn on">Like</button><span class="sep">·</span>
+            <button class="act-btn">Reply</button><span class="sep">·</span>
+            <span class="tme">31 min</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 6 -->
-    <div class="fb-c">
-      <div class="av av-lg c8">M</div>
-      <div class="fb-c-body">
-        <div class="fb-bbl">
-          <a href="#" class="name">Margy Peet</a>
-          <div class="txt">I lost my job in January and I was in a really dark place. A friend shared this video and I watched it twice. Something about knowing that my struggles weren't random — that there was a specific frequency behind them — made me feel less broken. The monk rituals in the bonus changed my mornings completely. I have hope again.</div>
-          <div class="react"><span>❤️</span><span>👍</span><span>😮</span> 204</div>
-        </div>
-        <div class="fb-acts">
-          <button class="act on">Like</button><span class="dot">·</span>
-          <button class="act">Reply</button><span class="dot">·</span>
-          <span class="tme">45 min</span>
+      <!-- 6. Margy Peet -->
+      <div class="cm">
+        <div class="av av-lg bg8">M</div>
+        <div class="cm-col">
+          <div class="bbl">
+            <a href="#" class="nm">Margy Peet</a>
+            <div class="tx">I lost my job in January and I was in a really dark place. A friend shared this video and I watched it twice. Something about knowing that my struggles weren't random — that there was a specific frequency behind them — made me feel less broken. The monk rituals in the bonus changed my mornings completely. I have hope again.</div>
+            <div class="rct"><span>❤️</span><span>👍</span><span>😮</span> 204</div>
+          </div>
+          <div class="acts">
+            <button class="act-btn on">Like</button><span class="sep">·</span>
+            <button class="act-btn">Reply</button><span class="sep">·</span>
+            <span class="tme">45 min</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 7 -->
-    <div class="fb-c">
-      <div class="av av-lg c9">M</div>
-      <div class="fb-c-body">
-        <div class="fb-bbl">
-          <a href="#" class="name">Michael Miller</a>
-          <div class="txt">I'm not a spiritual person at all. I'm an engineer. But the neuroscience explanation of how birth frequencies interact with brainwave patterns made complete sense to me. I bought it as an experiment. Six weeks later my relationship with money is completely different. I stopped making impulsive decisions. Saved over $3,000 last month alone. Don't ask me how. It works.</div>
-          <div class="react"><span>👍</span><span>😮</span> 271</div>
-        </div>
-        <div class="fb-acts">
-          <button class="act on">Like</button><span class="dot">·</span>
-          <button class="act">Reply</button><span class="dot">·</span>
-          <span class="tme">1 h</span>
-        </div>
-        <div class="fb-reps">
-          <div class="fb-r">
-            <div class="av av-sm c10">T</div>
-            <div class="fb-r-body">
-              <div class="fb-rbbl">
-                <span class="name">Tom Richardson</span>
-                <div class="txt">Michael same story — <span class="db">Digit 6</span> and I always thought my impulsive spending was just my personality. Apparently not lol</div>
-              </div>
-              <div class="fb-ract">
-                <button class="ract">Like</button><span class="rdot">·</span>
-                <button class="ract">Reply</button><span class="rdot">·</span>
-                <span class="rtme">42 min</span>
+      <!-- 7. Michael Miller -->
+      <div class="cm">
+        <div class="av av-lg bg9">M</div>
+        <div class="cm-col">
+          <div class="bbl">
+            <a href="#" class="nm">Michael Miller</a>
+            <div class="tx">I'm not a spiritual person at all. I'm an engineer. But the neuroscience explanation of how birth frequencies interact with brainwave patterns made complete sense to me. I bought it as an experiment. Six weeks later my relationship with money is completely different. I stopped making impulsive decisions. Saved over $3,000 last month alone. Don't ask me how. It works.</div>
+            <div class="rct"><span>👍</span><span>😮</span> 271</div>
+          </div>
+          <div class="acts">
+            <button class="act-btn on">Like</button><span class="sep">·</span>
+            <button class="act-btn">Reply</button><span class="sep">·</span>
+            <span class="tme">1 h</span>
+          </div>
+          <div class="reps">
+            <div class="rep">
+              <div class="av av-sm bg10">T</div>
+              <div class="rep-col">
+                <div class="rep-bbl">
+                  <span class="nm">Tom Richardson</span>
+                  <div class="tx">Michael same story — <span class="db">Digit 6</span> and I always thought my impulsive spending was just my personality. Apparently not lol</div>
+                </div>
+                <div class="rep-acts">
+                  <button class="rep-btn">Like</button><span class="rsep">·</span>
+                  <button class="rep-btn">Reply</button><span class="rsep">·</span>
+                  <span class="rtme">42 min</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 8 -->
-    <div class="fb-c">
-      <div class="av av-lg c11">J</div>
-      <div class="fb-c-body">
-        <div class="fb-bbl">
-          <a href="#" class="name">Jan McConnell</a>
-          <div class="txt">@Sarah Levine this is the one I told you about. My digit is <span class="db">9</span> and I've shared it with my whole group chat. Three of us bought it and all three of us are experiencing real shifts. One friend got an unexpected check in the mail the same week she started. Please watch the whole thing.</div>
-          <div class="react"><span>👍</span><span>❤️</span> 89</div>
-        </div>
-        <div class="fb-acts">
-          <button class="act on">Like</button><span class="dot">·</span>
-          <button class="act">Reply</button><span class="dot">·</span>
-          <span class="tme">1 h</span>
+      <!-- 8. Jan McConnell -->
+      <div class="cm">
+        <div class="av av-lg bg11">J</div>
+        <div class="cm-col">
+          <div class="bbl">
+            <a href="#" class="nm">Jan McConnell</a>
+            <div class="tx">@Sarah Levine this is the one I told you about. My digit is <span class="db">9</span> and I've shared it with my whole group chat. Three of us bought it and all three of us are experiencing real shifts. One friend got an unexpected check in the mail the same week she started. Please watch the whole thing.</div>
+            <div class="rct"><span>👍</span><span>❤️</span> 89</div>
+          </div>
+          <div class="acts">
+            <button class="act-btn on">Like</button><span class="sep">·</span>
+            <button class="act-btn">Reply</button><span class="sep">·</span>
+            <span class="tme">1 h</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 9 -->
-    <div class="fb-c">
-      <div class="av av-lg c12">D</div>
-      <div class="fb-c-body">
-        <div class="fb-bbl">
-          <a href="#" class="name">Dorothy Huang</a>
-          <div class="txt">I'm 67 years old. My granddaughter showed me this video. I almost told her to stop sending me internet things. I'm so glad I didn't. I'm a <span class="db">Digit 4</span> and the description of digit 4 feeling invisible their entire lives — I cried. Not from sadness. From relief. Someone finally explained my entire life. I wish I had found this 40 years ago.</div>
-          <div class="react"><span>❤️</span><span>👍</span><span>😭</span> 388</div>
-        </div>
-        <div class="fb-acts">
-          <button class="act on">Like</button><span class="dot">·</span>
-          <button class="act">Reply</button><span class="dot">·</span>
-          <span class="tme">1 h</span>
-        </div>
-        <div class="fb-reps">
-          <div class="fb-r">
-            <div class="av av-sm c13">A</div>
-            <div class="fb-r-body">
-              <div class="fb-rbbl">
-                <span class="name">Amanda Cho</span>
-                <div class="txt">Dorothy your comment made ME cry 😭 You deserve every bit of abundance coming your way 💛</div>
-              </div>
-              <div class="fb-ract">
-                <button class="ract on">Like</button><span class="rdot">·</span>
-                <button class="ract">Reply</button><span class="rdot">·</span>
-                <span class="rtme">50 min</span>
+      <!-- 9. Dorothy Huang -->
+      <div class="cm">
+        <div class="av av-lg bg12">D</div>
+        <div class="cm-col">
+          <div class="bbl">
+            <a href="#" class="nm">Dorothy Huang</a>
+            <div class="tx">I'm 67 years old. My granddaughter showed me this video. I almost told her to stop sending me internet things. I'm so glad I didn't. I'm a <span class="db">Digit 4</span> and the description of digit 4 feeling invisible their entire lives — I cried. Not from sadness. From relief. Someone finally explained my entire life. I wish I had found this 40 years ago.</div>
+            <div class="rct"><span>❤️</span><span>👍</span><span>😭</span> 388</div>
+          </div>
+          <div class="acts">
+            <button class="act-btn on">Like</button><span class="sep">·</span>
+            <button class="act-btn">Reply</button><span class="sep">·</span>
+            <span class="tme">1 h</span>
+          </div>
+          <div class="reps">
+            <div class="rep">
+              <div class="av av-sm bg13">A</div>
+              <div class="rep-col">
+                <div class="rep-bbl">
+                  <span class="nm">Amanda Cho</span>
+                  <div class="tx">Dorothy your comment made ME cry 😭 You deserve every bit of abundance coming your way 💛</div>
+                </div>
+                <div class="rep-acts">
+                  <button class="rep-btn on">Like</button><span class="rsep">·</span>
+                  <button class="rep-btn">Reply</button><span class="rsep">·</span>
+                  <span class="rtme">50 min</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 10 -->
-    <div class="fb-c">
-      <div class="av av-lg c10">K</div>
-      <div class="fb-c-body">
-        <div class="fb-bbl">
-          <a href="#" class="name">Kevin Torres</a>
-          <div class="txt">I've been a skeptic my whole life. Still am, kind of. But I can't deny what happened. <span class="db">Digit 1</span> — the competitive, self-destructive patterns they described were exactly my story. Multiple businesses started, most blown up by my own ego. Five weeks in and for the first time I didn't destroy a deal. Closed a $14,000 contract instead. Coincidence? Maybe. But I'm not stopping.</div>
-          <div class="react"><span>👍</span> 143</div>
-        </div>
-        <div class="fb-acts">
-          <button class="act on">Like</button><span class="dot">·</span>
-          <button class="act">Reply</button><span class="dot">·</span>
-          <span class="tme">1 h</span>
+      <!-- 10. Kevin Torres -->
+      <div class="cm">
+        <div class="av av-lg bg10">K</div>
+        <div class="cm-col">
+          <div class="bbl">
+            <a href="#" class="nm">Kevin Torres</a>
+            <div class="tx">I've been a skeptic my whole life. Still am, kind of. But I can't deny what happened. <span class="db">Digit 1</span> — the competitive, self-destructive patterns they described were exactly my story. Multiple businesses started, most blown up by my own ego. Five weeks in and for the first time I didn't destroy a deal. Closed a $14,000 contract instead. Coincidence? Maybe. But I'm not stopping.</div>
+            <div class="rct"><span>👍</span> 143</div>
+          </div>
+          <div class="acts">
+            <button class="act-btn on">Like</button><span class="sep">·</span>
+            <button class="act-btn">Reply</button><span class="sep">·</span>
+            <span class="tme">1 h</span>
+          </div>
         </div>
       </div>
+
+    </div><!-- /cList -->
+
+    <div id="more-row">
+      <div class="av av-lg bg2">Y</div>
+      <button id="moreBtn">View 4,821 more comments…</button>
     </div>
 
-  </div><!-- /fb-list -->
+  </div><!-- /comments-wrap -->
+  </div><!-- /comments-bg -->
 
-  <div class="fb-more">
-    <div class="av av-lg c2">Y</div>
-    <button class="more-btn" id="moreBtn">View 4,821 more comments…</button>
-  </div>
+  <footer>
+    <div class="ft-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Contact</a>
+      <a href="#">Refund Policy</a>
+    </div>
+    <p class="ft-disc">© 2026 Last Digit Frequency™. All rights reserved. For entertainment and personal development only. Individual results may vary and are not guaranteed.</p>
+  </footer>
 
-</div><!-- /fb-box -->
-</div><!-- /fb-page -->
-
-<footer>
-  <div class="foot-links">
-    <a href="#">Privacy Policy</a>
-    <a href="#">Terms of Service</a>
-    <a href="#">Contact</a>
-    <a href="#">Refund Policy</a>
-  </div>
-  <p class="disc">© 2026 Last Digit Frequency™. All rights reserved. For entertainment and personal development only. Individual results may vary and are not guaranteed.</p>
-</footer>
+</div><!-- /app -->
 
 <script>
-  /* Load more */
+(function() {
+  // Load more
   document.getElementById('moreBtn').addEventListener('click', function() {
     this.textContent = 'Loading…';
-    setTimeout(() => { this.textContent = 'View 4,821 more comments…'; }, 1500);
+    var self = this;
+    setTimeout(function() { self.textContent = 'View 4,821 more comments…'; }, 1500);
   });
 
-  /* Comment input */
+  // Like toggles on existing buttons
+  var btns = document.querySelectorAll('.act-btn, .rep-btn');
+  btns.forEach(function(b) {
+    if (b.textContent.trim() === 'Like') {
+      b.addEventListener('click', function() { this.classList.toggle('on'); });
+    }
+  });
+
+  // Comment input — auto-grow
   var inp  = document.getElementById('cInput');
   var send = document.getElementById('cSend');
-  var list = document.getElementById('fbList');
+  var list = document.getElementById('cList');
 
   inp.addEventListener('input', function() {
     this.style.height = 'auto';
@@ -626,44 +702,53 @@
     send.style.opacity = has ? '1' : '0.35';
     send.style.pointerEvents = has ? 'auto' : 'none';
   });
-  inp.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); post(); }
-  });
-  send.addEventListener('click', post);
 
-  function post() {
+  inp.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); postComment(); }
+  });
+  send.addEventListener('click', postComment);
+
+  function postComment() {
     var text = inp.value.trim();
     if (!text) return;
-    var el = document.createElement('div');
-    el.className = 'fb-c';
-    el.style.animation = 'fadeIn .2s ease';
-    el.innerHTML =
-      '<div class="av av-lg c2">Y</div>' +
-      '<div class="fb-c-body">' +
-        '<div class="fb-bbl">' +
-          '<span class="name">You</span>' +
-          '<div class="txt">' + esc(text) + '</div>' +
+
+    var div = document.createElement('div');
+    div.className = 'cm';
+    div.style.animation = 'fadeIn .2s ease';
+    div.innerHTML =
+      '<div class="av av-lg bg2">Y</div>' +
+      '<div class="cm-col">' +
+        '<div class="bbl">' +
+          '<span class="nm">You</span>' +
+          '<div class="tx">' + sanitize(text) + '</div>' +
         '</div>' +
-        '<div class="fb-acts">' +
-          '<button class="act">Like</button><span class="dot">·</span>' +
-          '<button class="act">Reply</button><span class="dot">·</span>' +
+        '<div class="acts">' +
+          '<button class="act-btn">Like</button><span class="sep">·</span>' +
+          '<button class="act-btn">Reply</button><span class="sep">·</span>' +
           '<span class="tme">Just now</span>' +
         '</div>' +
       '</div>';
-    list.insertBefore(el, list.firstChild);
-    inp.value = ''; inp.style.height = 'auto';
-    send.style.opacity = '0.35'; send.style.pointerEvents = 'none';
-    el.querySelector('.act').addEventListener('click', function() { this.classList.toggle('on'); });
+
+    list.insertBefore(div, list.firstChild);
+
+    inp.value = '';
+    inp.style.height = 'auto';
+    send.style.opacity = '0.35';
+    send.style.pointerEvents = 'none';
+
+    div.querySelector('.act-btn').addEventListener('click', function() {
+      this.classList.toggle('on');
+    });
   }
 
-  function esc(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  function sanitize(s) {
+    return s
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/\n/g, '<br>');
   }
-
-  /* Like toggles */
-  document.querySelectorAll('.act, .ract').forEach(function(b) {
-    if (b.textContent.trim() === 'Like') b.addEventListener('click', function() { this.classList.toggle('on'); });
-  });
+})();
 </script>
 </body>
 </html>
