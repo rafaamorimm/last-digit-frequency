@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#1a1a1a" />
+  <title>Last Digit Frequency™</title>
+  <style>
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { font-size: 15px; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+      background: #111;
+      color: #e8e8e8;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    img { display: block; max-width: 100%; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+    /* ── URGENCY BAR ── */
+    .urgency-bar {
+      background: #1c1c1c;
+      border-bottom: 1px solid #2e2e2e;
+      padding: 10px 16px;
+      text-align: center;
+    }
+    .urgency-bar p {
+      font-size: 12px;
+      color: #aaa;
+      line-height: 1.4;
+    }
+    .urgency-bar p strong { color: #ddd; }
+
+    /* ── HEADER ── */
+    header {
+      background: #111;
+      border-bottom: 1px solid #222;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      border: 2px solid #c9a84c;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: #c9a84c;
+      flex-shrink: 0;
+    }
+    .logo-text { font-size: 18px; font-weight: 700; color: #c9a84c; }
+    .logo-text sup { font-size: 10px; color: #888; }
+
+    /* ── VIDEO ── */
+    .vsl-section { background: #111; padding: 0; }
+    .video-wrapper { width: 100%; max-width: 720px; margin: 0 auto; }
+    .video-placeholder {
+      background: #cc1111;
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
+    }
+    .video-question {
+      font-size: clamp(16px, 4.5vw, 26px);
+      font-weight: 800;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 22px;
+      line-height: 1.3;
+    }
+    .video-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 280px;
+    }
+    .video-btn {
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+      background: rgba(255,255,255,0.15);
+      border: 2px solid rgba(255,255,255,0.45);
+      border-radius: 50px;
+      padding: 12px 20px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      min-height: 48px;
+      transition: background .15s;
+      width: 100%;
+    }
+    .video-btn:active { background: rgba(255,255,255,0.28); }
+    @media (min-width: 480px) {
+      .video-options { flex-direction: row; max-width: 480px; }
+      .video-btn { width: auto; flex: 1; }
+    }
+
+    /* ════════════════════════════════
+       FACEBOOK COMMENTS — PIXEL ACCURATE
+    ════════════════════════════════ */
+    .fb-section {
+      background: #fff;
+    }
+
+    /* Top divider like Facebook post */
+    .fb-post-bar {
+      background: #fff;
+      border-bottom: 1px solid #e4e6ea;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .fb-post-bar .comment-count {
+      font-size: 13px;
+      color: #65676b;
+    }
+    .fb-sort-btn {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 13px; color: #1877F2; font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 6px;
+      min-height: 32px;
+    }
+    .fb-sort-btn:active { background: #e8f0fe; }
+    .fb-sort-btn svg { flex-shrink: 0; }
+
+    /* Reaction bar (like the post reactions) */
+    .fb-reactions-bar {
+      padding: 6px 12px 2px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 13px; color: #65676b;
+    }
+    .fb-reactions-bar .react-left {
+      display: flex; align-items: center; gap: 4px;
+    }
+    .fb-reaction-bubble {
+      width: 18px; height: 18px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; border: 1.5px solid #fff;
+      margin-right: -4px;
+    }
+    .rb-like { background: #1877F2; }
+    .rb-love { background: #F33E58; }
+    .rb-haha { background: #F7B125; }
+    .rb-wow  { background: #F7B125; }
+
+    /* ── Comment Input ── */
+    .fb-input-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px 10px;
+      background: #fff;
+      border-bottom: 1px solid #e4e6ea;
+    }
+    .fb-input-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      flex-shrink: 0; background: #1877F2;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 14px; color: #fff;
+      user-select: none;
+    }
+    .fb-input-pill {
+      flex: 1;
+      background: #f0f2f5;
+      border-radius: 20px;
+      padding: 8px 14px;
+      font-size: 15px;
+      color: #050505;
+      min-height: 36px;
+      border: none;
+      outline: none;
+      resize: none;
+      overflow: hidden;
+      font-family: inherit;
+      line-height: 1.4;
+    }
+    .fb-input-pill::placeholder { color: #65676b; }
+    .fb-input-icons {
+      display: flex; gap: 6px; padding-right: 2px;
+    }
+    .fb-input-icons button {
+      color: #65676b;
+      padding: 4px;
+      border-radius: 50%;
+      min-width: 32px; min-height: 32px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .fb-input-icons button:active { background: #e4e6ea; }
+
+    /* ── Comments List ── */
+    .fb-comments-list {
+      background: #fff;
+      padding-bottom: 6px;
+    }
+
+    /* Single comment */
+    .fb-comment {
+      padding: 6px 12px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .fb-comment-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      overflow: hidden; flex-shrink: 0; margin-top: 2px;
+    }
+    .fb-comment-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .fb-comment-right { flex: 1; min-width: 0; }
+
+    /* Bubble */
+    .fb-bubble {
+      background: #f0f2f5;
+      border-radius: 18px;
+      padding: 8px 12px;
+      display: inline-block;
+      max-width: 100%;
+      position: relative;
+    }
+    .fb-bubble .fb-name {
+      font-weight: 700;
+      font-size: 13px;
+      color: #050505;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .fb-bubble .fb-name a { color: #050505; text-decoration: none; }
+    .fb-bubble .fb-name a:hover { text-decoration: underline; }
+    .fb-bubble .fb-text {
+      font-size: 15px;
+      color: #050505;
+      line-height: 1.34;
+      word-break: break-word;
+    }
+    .fb-bubble .fb-text strong { color: #050505; font-weight: 700; }
+
+    /* Bubble reaction badge */
+    .fb-bubble-react {
+      position: absolute;
+      bottom: -10px; right: -4px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 1px 5px 1px 3px;
+      display: flex; align-items: center; gap: 2px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      font-size: 11px;
+      color: #65676b;
+      white-space: nowrap;
+    }
+    .fb-bubble-react .emoji { font-size: 12px; }
+
+    /* Actions row below bubble */
+    .fb-actions {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 6px 4px 2px;
+      flex-wrap: wrap;
+    }
+    .fb-act-btn {
+      font-size: 12px;
+      font-weight: 700;
+      color: #65676b;
+      padding: 4px 6px;
+      border-radius: 4px;
+      min-height: 28px;
+      min-width: 36px;
+      display: flex; align-items: center;
+    }
+    .fb-act-btn:active { background: #e4e6ea; }
+    .fb-act-btn.liked { color: #1877F2; }
+    .fb-act-dot {
+      font-size: 12px; color: #bcc0c4;
+      padding: 0 2px;
+      line-height: 28px;
+    }
+    .fb-act-time {
+      font-size: 12px;
+      color: #65676b;
+      padding: 4px 6px;
+      min-height: 28px;
+      display: flex; align-items: center;
+    }
+
+    /* ── Digit badge ── */
+    .digit-badge {
+      display: inline-block;
+      background: #1877F2;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 10px;
+      margin: 0 1px;
+      vertical-align: middle;
+    }
+
+    /* ── Replies ── */
+    .fb-replies {
+      padding: 0 0 0 40px;
+    }
+    .fb-view-replies-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 12px 4px 0;
+      font-size: 13px; font-weight: 700; color: #65676b;
+      min-height: 32px;
+    }
+    .fb-view-replies-btn:active { color: #050505; }
+    .fb-reply { padding: 4px 0 0; display: flex; align-items: flex-start; gap: 8px; }
+    .fb-reply-avatar {
+      width: 24px; height: 24px; border-radius: 50%;
+      overflow: hidden; flex-shrink: 0; margin-top: 2px;
+    }
+    .fb-reply-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .fb-reply-right { flex: 1; min-width: 0; }
+    .fb-reply-bubble {
+      background: #f0f2f5;
+      border-radius: 16px;
+      padding: 6px 10px;
+      display: inline-block;
+      max-width: 100%;
+    }
+    .fb-reply-bubble .fb-name {
+      font-weight: 700; font-size: 12px; color: #050505; margin-bottom: 1px;
+    }
+    .fb-reply-bubble .fb-text {
+      font-size: 13px; color: #050505; line-height: 1.34;
+    }
+    .fb-reply-actions {
+      display: flex; align-items: center; padding: 3px 4px 0; gap: 0;
+    }
+    .fb-reply-act {
+      font-size: 11px; font-weight: 700; color: #65676b;
+      padding: 3px 5px; border-radius: 4px; min-height: 24px;
+      display: flex; align-items: center;
+    }
+    .fb-reply-act:active { background: #e4e6ea; }
+    .fb-reply-act.liked { color: #1877F2; }
+    .fb-reply-dot { font-size: 11px; color: #bcc0c4; padding: 0 1px; }
+    .fb-reply-time { font-size: 11px; color: #65676b; padding: 3px 5px; min-height: 24px; display: flex; align-items: center; }
+
+    /* ── Load More ── */
+    .fb-load-more {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px 16px;
+      background: #fff;
+    }
+    .fb-load-more-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      flex-shrink: 0; background: #1877F2;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 14px; color: #fff;
+      user-select: none;
+    }
+    .fb-load-more-btn {
+      flex: 1;
+      background: #f0f2f5;
+      border-radius: 20px;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1877F2;
+      text-align: left;
+      min-height: 36px;
+      display: flex; align-items: center;
+    }
+    .fb-load-more-btn:active { background: #e4e6ea; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #0a0a0a;
+      border-top: 1px solid #1a1a1a;
+      padding: 20px 16px;
+      text-align: center;
+      font-size: 12px; color: #444;
+    }
+    footer .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 0; margin-bottom: 10px; }
+    footer a { color: #555; text-decoration: none; padding: 4px 8px; }
+    .disclaimer {
+      font-size: 11px; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto;
+    }
+
+    /* ── DESKTOP ── */
+    @media (min-width: 640px) {
+      .vsl-section { padding: 28px 20px 32px; background: #0d0d0d; }
+      .video-wrapper { border-radius: 8px; overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.6); }
+      .fb-section { max-width: 680px; margin: 0 auto; border-radius: 0; }
+      .fb-comment-avatar { width: 36px; height: 36px; }
+      .fb-input-avatar { width: 36px; height: 36px; }
+    }
+  </style>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1134863328817834');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1134863328817834&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+
+<!-- Utmify -->
+<script
+  src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+  data-utmify-prevent-xcod-sck
+  data-utmify-prevent-subids
+  async
+  defer
+></script>
+</head>
+<body>
+
+<!-- URGENCY BAR -->
+<div class="urgency-bar">
+  <p>⚠️ <strong>Warning:</strong> This sacred frequency presentation may be removed at any time</p>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-icon">∞</div>
+  <div class="logo-text">Last Digit Frequency<sup>™</sup></div>
+</header>
+
+<!-- VIDEO -->
+<section class="vsl-section">
+  <div class="video-wrapper">
+    <vturb-smartplayer id="vid-69ff74141519d629fefcff10" style="display: block; margin: 0 auto; width: 100%;"></vturb-smartplayer>
+    <script type="text/javascript">
+      var s=document.createElement("script");
+      s.src="https://scripts.converteai.net/ee830e5f-20cd-464b-af49-240d2b124f63/players/69ff74141519d629fefcff10/v4/player.js";
+      s.async=!0;
+      document.head.appendChild(s);
+    </script>
+  </div>
+</section>
+
+<!-- ════ FACEBOOK COMMENTS ════ -->
+<div class="fb-section">
+
+  <!-- Post bar -->
+  <div class="fb-post-bar">
+    <span class="comment-count">Showing 16 of 4,831 comments</span>
+    <button class="fb-sort-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="#1877F2"><path d="M3 18h6v-2H3v2zm0-5h10v-2H3v2zm0-7v2h18V6H3z"/></svg>
+      Most Relevant
+    </button>
+  </div>
+
+  <!-- Input row -->
+  <div class="fb-input-row" id="commentInputRow">
+    <div class="fb-input-avatar">Y</div>
+    <textarea id="commentInput" class="fb-input-pill" rows="1" placeholder="Write a comment…"></textarea>
+    <div class="fb-input-icons">
+      <button type="button" id="submitComment" title="Post comment" style="color:#1877F2;opacity:0.4;transition:opacity .15s;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- COMMENTS LIST -->
+  <div class="fb-comments-list">
+
+    <!-- ── 1. Meredith Fields ── -->
+    <div class="fb-comment">
+      <div class="fb-comment-avatar"><img src="https://i.pravatar.cc/40?img=5" alt="Meredith Fields" /></div>
+      <div class="fb-comment-right">
+        <div class="fb-bubble">
+          <div class="fb-name"><a href="#">Meredith Fields</a></div>
+          <div class="fb-text">I watched this three times because I couldn't believe what I was hearing. I'm a <span class="digit-badge">Digit 8</span> and everything they described — the financial blocks, the self-sabotage, the relationship patterns — that was my entire life. I started listening to my frequency audio every morning and within two weeks I got a job offer I had been chasing for a year. I'm shaking writing this.</div>
+          <div class="fb-bubble-react"><span class="emoji">👍</span><span class="emoji">❤️</span><span class="emoji">😮</span> 247</div>
+        </div>
+        <div class="fb-actions">
+          <button class="fb-act-btn liked">Like</button>
+          <span class="fb-act-dot">·</span>
+          <button class="fb-act-btn">Reply</button>
+          <span class="fb-act-dot">·</span>
+          <span class="fb-act-time">4 min</span>
+        </div>
+        <div class="fb-replies">
+          <div class="fb-reply">
+            <div class="fb-reply-avatar"><img src="https://i.pravatar.cc/30?img=9" alt="Sarah Levine" /></div>
+            <div class="fb-reply-right">
+              <div class="fb-reply-bubble">
+                <div class="fb-name">Sarah Levine</div>
+                <div class="fb-text">Meredith same!!! Digit 8 here too and this felt like someone read my diary. The job thing is wild — congratulations!! 🙏</div>
+              </div>
+              <div class="fb-reply-actions">
+                <button class="fb-reply-act liked">Like</button>
+                <span class="fb-reply-dot">·</span>
+                <button class="fb-reply-act">Reply</button>
+                <span class="fb-reply-dot">·</span>
+                <span class="fb-reply-time">2 min</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 2. Jessica Allen ── -->
+    <div class="fb-comment">
+      <div class="fb-comment-avatar"><img src="https://i.pravatar.cc/40?img=16" alt="Jessica Allen" /></div>
+      <div class="fb-comment-right">
+        <div class="fb-bubble">
+          <div class="fb-name"><a href="#">Jessica Allen</a></div>
+          <div class="fb-text">I was completely skeptical. My sister sent me the link and I almost didn't watch it. But something made me stay until the end. My digit is <span class="digit-badge">Digit 3</span> and the description of why digit 3s struggle with love hit me so hard I cried. I've been single for 6 years. After 3 weeks of listening to the frequency I met someone incredible. This is real.</div>
+          <div class="fb-bubble-react"><span class="emoji">👍</span><span class="emoji">❤️</span> 183</div>
+        </div>
+        <div class="fb-actions">
+          <button class="fb-act-btn liked">Like</button>
+          <span class="fb-act-dot">·</span>
+          <button class="fb-act-btn">Reply</button>
+          <span class="fb-act-dot">·</span>
+          <span class="fb-act-time">12 min</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 3. Richard Shutter ── -->
+    <div class="fb-comment">
+      <div class="fb-comment-avatar"><img src="https://i.pravatar.cc/40?img=53" alt="Richard Shutter" /></div>
+      <div class="fb-comment-right">
+        <div class="fb-bubble">
+          <div class="fb-name"><a href="#">Richard Shutter</a></div>
+          <div class="fb-text">My whole family thought I was going crazy when I told them about this. But I was desperate — broke at 54, health falling apart, completely alone. The frequency audio for <span class="digit-badge">Digit 7</span> is something else. I listen every night with headphones and I feel a physical shift in my chest. My blood pressure is down, my business had its best month ever, and I feel ALIVE again.</div>
+          <div class="fb-bubble-react"><span class="emoji">👍</span><span class="emoji">😮</span><span class="emoji">❤️</span> 312</div>
+        </div>
+        <div class="fb-actions">
+          <button class="fb-act-btn liked">Like</button>
+          <span class="fb-act-dot">·</span>
+          <button class="fb-act-btn">Reply</button>
+          <span class="fb-act-dot">·</span>
+          <span class="fb-act-time">18 min</span>
+        </div>
+        <div class="fb-replies">
+          <div class="fb-reply">
+            <div class="fb-reply-avatar"><img src="https://i.pravatar.cc/30?img=20" alt="Linda Kowalski" /></div>
+            <div class="fb-reply-right">
+              <div class="fb-reply-bubble">
+                <div class="fb-name">Linda Kowalski</div>
+                <div class="fb-text">Richard — digit 7 here and the exact same happened with my blood pressure. My doctor was genuinely confused 😂 I did not mention the frequency lol</div>
+              </div>
+              <div class="fb-reply-actions">
+                <button class="fb-reply-act liked">Like</button>
+                <span class="fb-reply-dot">·</span>
+                <button class="fb-reply-act">Reply</button>
+                <span class="fb-reply-dot">·</span>
+                <span class="fb-reply-time">9 min</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 4. Florence Bess ── -->
+    <div class="fb-comment">
+      <div class="fb-comment-avatar"><img src="https://i.pravatar.cc/40?img=25" alt="Florence Bess" /></div>
+      <div class="fb-comment-right">
+        <div class="fb-bubble">
+          <div class="fb-name"><a href="#">Florence Bess</a></div>
+          <div class="fb-text">The part about <span class="digit-badge">Digit 5</span> being blocked from abundance because of an inherited energetic pattern — that explained my entire family history. My mom struggled. Her mom struggled. And so did I. I feel like I finally broke the cycle. It's only been a month but something has genuinely shifted. Money is moving differently. I can't explain it but I feel it.</div>
+          <div class="fb-bubble-react"><span class="emoji">❤️</span><span class="emoji">👍</span> 96</div>
+        </div>
+        <div class="fb-actions">
+          <button class="fb-act-btn liked">Like</button>
+          <span class="fb-act-dot">·</span>
+          <button class="fb-act-btn">Reply</button>
+          <span class="fb-act-dot">·</span>
+          <span class="fb-act-time">22 min</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 5. Nancy Cohen ── -->
+    <div class="fb-comment">
+      <div class="fb-comment-avatar"><img src="https://i.pravatar.cc/40?img=32" alt="Nancy Cohen" /></div>
+      <div class="fb-comment-right">
+        <div class="fb-bubble">
+          <div class="fb-name"><a href="#">Nancy Cohen</a></div>
+          <div class="fb-text">I've tried everything — therapy, manifestation courses, vision boards. Nothing stuck. This is the first thing that felt like it was made FOR me specifically. Because it literally was — it's based on my actual birth digit. The healing recipes from the bonus are incredible too. My sleep is the best it's been in 10 years.</div>
+          <div class="fb-bubble-react"><span class="emoji">👍</span><span class="emoji">❤️</span> 156</div>
+        </div>
+        <div class="fb-actions">
+          <button class="fb-act-btn liked">Like</button>
+          <span class="fb-act-dot">·</span>
+          <button class="fb-act-btn">Reply</button>
+          <span class="fb-act-dot">·</span>
+          <span class="fb-act-time">31 min</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 6. Margy Peet ── -->
+    <div class="fb-comment">
+      <div class="fb-comment-avatar"><img src="https://i.pravatar.cc/40?img=44" alt="Margy Peet" /></div>
+      <div class="fb-comment-right">
+        <div class="fb-bubble">
+          <div class="fb-name"><a href="#">Margy Peet</a></div>
+          <div class="fb-text">I lost my job in January and I was in a really dark place. A friend shared this video and I watched it twice. Something about knowing that my struggles weren't random — that there was a specific frequency behind them — made me feel less broken. The monk rituals in the bonus changed my mornings completely. I have hope again.</div>
+          <div class="fb-bubble-react"><span class="emoji">❤️</span><span class="emoji">👍</span><span class="emoji">😮</span> 204</div>
+        </div>
+        <div class="fb-actions">
+          <button class="fb-act-btn liked">Like</button>
+          <span class="fb-act-dot">·</span>
+          <button class="fb-act-btn">Reply</button>
+          <span class="fb-act-dot">·</span>
+          <span class="fb-act-time">45 min</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 7. Michael Miller ── -->
+    <div class="fb-comment">
+      <div class="fb-comment-avatar"><img src="https://i.pravatar.cc/40?img=57" alt="Michael Miller" /></div>
+      <div class="fb-comment-right">
+        <div class="fb-bubble">
+          <div class="fb-name"><a href="#">Michael Miller</a></div>
+          <div class="fb-text">I'm not a spiritual person at all. I'm an engineer. But the neuroscience explanation of how birth frequencies interact with brainwave patterns made complete sense to me. I bought it as an experiment. Six weeks later my relationship with money is completely different. I stopped making impulsive decisions. Saved over $3,000 last month alone. Don't ask me how. It works.</div>
+          <div class="fb-bubble-react"><span class="emoji">👍</span><span class="emoji">😮</span> 271</div>
+        </div>
+        <div class="fb-actions">
+          <button class="fb-act-btn liked">Like</button>
+          <span class="fb-act-dot">·</span>
+          <button class="fb-act-btn">Reply</button>
+          <span class="fb-act-dot">·</span>
+          <span class="fb-act-time">1 h</span>
+        </div>
+        <div class="fb-replies">
+          <div class="fb-reply">
+            <div class="fb-reply-avatar"><img src="https://i.pravatar.cc/30?img=61" alt="Tom Richardson" /></div>
+            <div class="fb-reply-right">
+              <div class="fb-reply-bubble">
+                <div class="fb-name">Tom Richardson</div>
+                <div class="fb-text">Michael same story — <span class="digit-badge">Digit 6</span> and I always thought my impulsive spending was just my personality. Apparently it was the frequency all along lol</div>
+              </div>
+              <div class="fb-reply-actions">
+                <button class="fb-reply-act">Like</button>
+                <span class="fb-reply-dot">·</span>
+                <button class="fb-reply-act">Reply</button>
+                <span class="fb-reply-dot">·</span>
+                <span class="fb-reply-time">42 min</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 8. Jan McConnell ── -->
+    <div class="fb-comment">
+      <div class="fb-comment-avatar"><img src="https://i.pravatar.cc/40?img=12" alt="Jan McConnell" /></div>
+      <div class="fb-comment-right">
+        <div class="fb-bubble">
+          <div class="fb-name"><a href="#">Jan McConnell</a></div>
+          <div class="fb-text">@Sarah Levine this is the one I told you about. My digit is <span class="digit-badge">9</span> and I've shared it with my whole group chat. Three of us bought it and all three of us are experiencing real shifts. One friend got an unexpected check in the mail the same week she started. Please watch the whole thing.</div>
+          <div class="fb-bubble-react"><span class="emoji">👍</span><span class="emoji">❤️</span> 89</div>
+        </div>
+        <div class="fb-actions">
+          <button class="fb-act-btn liked">Like</button>
+          <span class="fb-act-dot">·</span>
+          <button class="fb-act-btn">Reply</button>
+          <span class="fb-act-dot">·</span>
+          <span class="fb-act-time">1 h</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 9. Dorothy Huang ── -->
+    <div class="fb-comment">
+      <div class="fb-comment-avatar"><img src="https://i.pravatar.cc/40?img=38" alt="Dorothy Huang" /></div>
+      <div class="fb-comment-right">
+        <div class="fb-bubble">
+          <div class="fb-name"><a href="#">Dorothy Huang</a></div>
+          <div class="fb-text">I'm 67 years old. My granddaughter showed me this video. I almost told her to stop sending me internet things. I'm so glad I didn't. I'm a <span class="digit-badge">Digit 4</span> and the description of digit 4 feeling invisible their entire lives — I cried. Not from sadness. From relief. Someone finally explained my entire life. I wish I had found this 40 years ago.</div>
+          <div class="fb-bubble-react"><span class="emoji">❤️</span><span class="emoji">👍</span><span class="emoji">😭</span> 388</div>
+        </div>
+        <div class="fb-actions">
+          <button class="fb-act-btn liked">Like</button>
+          <span class="fb-act-dot">·</span>
+          <button class="fb-act-btn">Reply</button>
+          <span class="fb-act-dot">·</span>
+          <span class="fb-act-time">1 h</span>
+        </div>
+        <div class="fb-replies">
+          <div class="fb-reply">
+            <div class="fb-reply-avatar"><img src="https://i.pravatar.cc/30?img=49" alt="Amanda Cho" /></div>
+            <div class="fb-reply-right">
+              <div class="fb-reply-bubble">
+                <div class="fb-name">Amanda Cho</div>
+                <div class="fb-text">Dorothy your comment made ME cry 😭 You deserve every bit of abundance coming your way 💛</div>
+              </div>
+              <div class="fb-reply-actions">
+                <button class="fb-reply-act liked">Like</button>
+                <span class="fb-reply-dot">·</span>
+                <button class="fb-reply-act">Reply</button>
+                <span class="fb-reply-dot">·</span>
+                <span class="fb-reply-time">50 min</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 10. Kevin Torres ── -->
+    <div class="fb-comment">
+      <div class="fb-comment-avatar"><img src="https://i.pravatar.cc/40?img=67" alt="Kevin Torres" /></div>
+      <div class="fb-comment-right">
+        <div class="fb-bubble">
+          <div class="fb-name"><a href="#">Kevin Torres</a></div>
+          <div class="fb-text">I've been a skeptic my whole life. Still am, kind of. But I can't deny what happened. <span class="digit-badge">Digit 1</span> — the competitive, self-destructive patterns they described were exactly my story. Multiple businesses started, most blown up by my own ego. Five weeks in and for the first time I didn't destroy a deal. Closed a $14,000 contract instead. Coincidence? Maybe. But I'm not stopping.</div>
+          <div class="fb-bubble-react"><span class="emoji">👍</span> 143</div>
+        </div>
+        <div class="fb-actions">
+          <button class="fb-act-btn liked">Like</button>
+          <span class="fb-act-dot">·</span>
+          <button class="fb-act-btn">Reply</button>
+          <span class="fb-act-dot">·</span>
+          <span class="fb-act-time">1 h</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /comments-list -->
+
+  <!-- Load more -->
+  <div class="fb-load-more">
+    <div class="fb-load-more-avatar">Y</div>
+    <button class="fb-load-more-btn" id="loadMoreBtn">View 4,821 more comments…</button>
+  </div>
+
+</div><!-- /fb-section -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms of Service</a>
+    <a href="#">Contact</a>
+    <a href="#">Refund Policy</a>
+  </div>
+  <p class="disclaimer">© 2026 Last Digit Frequency™. All rights reserved. For entertainment and personal development only. Individual results may vary and are not guaranteed.</p>
+</footer>
+
+<script>
+  /* ── Video ── */
+  function playVideo() {
+    document.getElementById('videoPh').innerHTML =
+      '<p style="color:white;font-size:17px;padding:60px 24px;text-align:center">▶ Embed your VSL video here</p>';
+  }
+
+  /* ── Load more ── */
+  document.getElementById('loadMoreBtn').addEventListener('click', function() {
+    this.textContent = 'Loading…';
+    setTimeout(() => { this.textContent = 'View 4,821 more comments…'; }, 1500);
+  });
+
+  /* ── Comment input: auto-resize + enable/disable send ── */
+  const textarea   = document.getElementById('commentInput');
+  const sendBtn    = document.getElementById('submitComment');
+  const list       = document.querySelector('.fb-comments-list');
+
+  textarea.addEventListener('input', function () {
+    /* auto-grow */
+    this.style.height = 'auto';
+    this.style.height = this.scrollHeight + 'px';
+    /* toggle send button opacity */
+    const hasText = this.value.trim().length > 0;
+    sendBtn.style.opacity = hasText ? '1' : '0.4';
+    sendBtn.style.pointerEvents = hasText ? 'auto' : 'none';
+  });
+
+  /* submit on Enter (Shift+Enter = new line) */
+  textarea.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      postComment();
+    }
+  });
+
+  sendBtn.addEventListener('click', postComment);
+
+  function postComment() {
+    const text = textarea.value.trim();
+    if (!text) return;
+
+    const now = 'Just now';
+    const card = document.createElement('div');
+    card.className = 'fb-comment';
+    card.style.animation = 'fadeIn .25s ease';
+    card.innerHTML = `
+      <div class="fb-comment-avatar" style="background:#1877F2;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;width:32px;height:32px;border-radius:50%;flex-shrink:0;margin-top:2px;">Y</div>
+      <div class="fb-comment-right">
+        <div class="fb-bubble">
+          <div class="fb-name" style="cursor:default;">You</div>
+          <div class="fb-text">${escapeHtml(text)}</div>
+        </div>
+        <div class="fb-actions">
+          <button class="fb-act-btn">Like</button>
+          <span class="fb-act-dot">·</span>
+          <button class="fb-act-btn">Reply</button>
+          <span class="fb-act-dot">·</span>
+          <span class="fb-act-time">${now}</span>
+        </div>
+      </div>`;
+
+    /* insert at top of comments list */
+    list.insertBefore(card, list.firstChild);
+
+    /* reset input */
+    textarea.value = '';
+    textarea.style.height = 'auto';
+    sendBtn.style.opacity = '0.4';
+    sendBtn.style.pointerEvents = 'none';
+
+    /* like toggle on new comment */
+    card.querySelector('.fb-act-btn').addEventListener('click', function () {
+      const liked = this.classList.toggle('liked');
+      this.style.color = liked ? '#1877F2' : '';
+    });
+  }
+
+  /* like toggle on existing comments */
+  document.querySelectorAll('.fb-act-btn, .fb-reply-act').forEach(btn => {
+    if (btn.textContent.trim() === 'Like') {
+      btn.addEventListener('click', function () {
+        this.classList.toggle('liked');
+      });
+    }
+  });
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+              .replace(/"/g,'&quot;').replace(/\n/g,'<br>');
+  }
+</script>
+<style>
+  @keyframes fadeIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+</style>
+</body>
+</html>
