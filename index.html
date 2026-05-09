@@ -30,12 +30,18 @@
 
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html { -webkit-text-size-adjust: 100%; }
+    html {
+      -webkit-text-size-adjust: 100%;
+      overflow-x: hidden;
+      width: 100%;
+    }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
       background: #111;
       color: #e8e8e8;
       overflow-x: hidden;
+      width: 100%;
+      max-width: 100vw;
     }
     button { font-family: inherit; cursor: pointer; border: none; background: none; }
 
@@ -66,8 +72,9 @@
     .logo-text sup { font-size: 10px; color: #888; }
 
     /* VIDEO */
-    .vsl-wrap { background: #111; }
-    .vsl-inner { width: 100%; max-width: 720px; margin: 0 auto; }
+    .vsl-wrap { background: #111; overflow: hidden; width: 100%; }
+    .vsl-inner { width: 100%; max-width: 720px; margin: 0 auto; overflow: hidden; }
+    .vsl-inner vturb-smartplayer { max-width: 100% !important; width: 100% !important; }
 
     /* COMMENTS — full-width light bg */
     .fb-outer { background: #f0f2f5; width: 100%; }
