@@ -29,14 +29,25 @@ fbq('init','1134863328817834');fbq('track','PageView');
   padding: 0;
 }
 html {
-  overflow-x: hidden;
+  overflow-x: hidden !important;
   -webkit-text-size-adjust: 100%;
+  background: #111 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
-body {
-  overflow-x: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-  background: #111;
-  color: #e8e8e8;
+/* Escudo contra CSS injetado pelo CTA do vturb (background, padding, flex, etc no body) */
+html body {
+  overflow-x: hidden !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif !important;
+  background: #111 !important;
+  color: #e8e8e8 !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  justify-content: initial !important;
+  align-items: initial !important;
 }
 /* Escudo contra display flex/grid injetado no body pelo vturb */
 #app {
@@ -45,6 +56,8 @@ body {
   max-width: 100vw !important;
   overflow-x: hidden !important;
   float: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* ====================================================
